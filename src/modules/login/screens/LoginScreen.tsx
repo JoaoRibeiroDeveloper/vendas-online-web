@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 
 import Button from '../../../shared/buttons/button/Button';
@@ -12,19 +13,34 @@ import {
 } from '../styles/loginScreen.styles';
 
 const LoginScreen = () => {
-  const [username, setUsename] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsename(event.target.value);
+  const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
   };
 
   const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
 
-  const handleLogin = () => {
-    alert(`Username: ${username}, Password: ${password}`);
+  const handleLogin = async () => {
+    await axios({
+      method: 'post',
+      url: 'http://localhost:8080/auth',
+      data: {
+        email,
+        password,
+      },
+    })
+      .then(result => {
+        console.log(result);
+        alert(`Fez Login ${result.data.accessToken}`);
+        return result.data;
+      })
+      .catch(() => {
+        alert('E-mail e/ou Senha inválido(s)');
+      });
   };
 
   return (
@@ -38,8 +54,8 @@ const LoginScreen = () => {
           <Input
             title="USUÁRIO"
             margin="32px 0px 0px"
-            onChange={handleUsername}
-            value={username}
+            onChange={handleEmail}
+            value={email}
           />
           <Input
             type="password"
