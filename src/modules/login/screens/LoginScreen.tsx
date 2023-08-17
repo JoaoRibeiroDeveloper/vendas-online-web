@@ -1,9 +1,10 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 
-import Button from '../../../shared/buttons/button/Button';
-import SVGLogo from '../../../shared/icons/SVGLogo';
-import Input from '../../../shared/inputs/input/Input';
+import Button from '../../../shared/components/buttons/button/Button';
+import SVGLogo from '../../../shared/components/icons/SVGLogo';
+import Input from '../../../shared/components/inputs/input/Input';
+import { useGlobalContext } from '../../../shared/hooks/useGlobalContext';
+import { useRequests } from '../../../shared/hooks/useRequests';
 import {
   BackgroundImage,
   ContainerLogin,
@@ -13,8 +14,10 @@ import {
 } from '../styles/loginScreen.styles';
 
 const LoginScreen = () => {
+  const { accessToken, setAccessToken } = useGlobalContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { postRequest, loading } = useRequests();
 
   const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -25,22 +28,11 @@ const LoginScreen = () => {
   };
 
   const handleLogin = async () => {
-    await axios({
-      method: 'post',
-      url: 'http://localhost:8080/auth',
-      data: {
-        email,
-        password,
-      },
-    })
-      .then(result => {
-        console.log(result);
-        alert(`Fez Login ${result.data.accessToken}`);
-        return result.data;
-      })
-      .catch(() => {
-        alert('E-mail e/ou Senha inválido(s)');
-      });
+    setAccessToken('Novo Token');
+    postRequest('http://localhost:8080/auth', {
+      email,
+      password,
+    });
   };
 
   return (
@@ -49,7 +41,7 @@ const LoginScreen = () => {
         <LimitedContainer>
           <SVGLogo />
           <TitleLogin level={2} type="secondary">
-            Login
+            Login ({accessToken})
           </TitleLogin>
           <Input
             title="USUÁRIO"
@@ -65,6 +57,7 @@ const LoginScreen = () => {
             value={password}
           />
           <Button
+            loading={loading}
             onClick={handleLogin}
             type="primary"
             margin="64px 0px 16px 0px"
