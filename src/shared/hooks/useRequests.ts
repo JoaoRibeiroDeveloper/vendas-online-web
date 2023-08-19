@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,7 +6,10 @@ import { ProductRoutesEnum } from '../../modules/product/routes';
 import { ERROR_INVALID_PASSWORD } from '../constants/errosStatus';
 import { URL_AUTH } from '../constants/urls';
 import { setAuthorizationToken } from '../functions/connection/auth';
-import { connectionAPIPost } from '../functions/connection/connectionAPI';
+import ConnectionAPI, {
+  connectionAPIPost,
+  MethodType,
+} from '../functions/connection/connectionAPI';
 import { useGlobalContext } from './useGlobalContext';
 
 export const useRequests = () => {
@@ -15,18 +17,31 @@ export const useRequests = () => {
   const navigate = useNavigate();
   const { setNotification, setUser } = useGlobalContext();
 
-  const getRequest = async (url: string) => {
+  const request = async <T>(
+    url: string,
+    method: MethodType,
+    saveGlobal?: (object: T) => void,
+    body?: unknown,
+  ): Promise<T | undefined> => {
     setLoading(true);
-    return await axios({
-      method: 'get',
+    const returnObject: T | undefined = await ConnectionAPI.connect<T>(
       url,
-    })
-      .then(result => result.data)
-      .catch(error => {
-        alert(
-          `Erro ${typeof error === 'object' ? JSON.stringify(error) : error}`,
-        );
+      method,
+      body,
+    )
+      .then(result => {
+        if (saveGlobal) {
+          saveGlobal(result);
+        }
+        return result;
+      })
+      .catch((error: Error) => {
+        setNotification(error.message, 'error');
+        return undefined;
       });
+    setLoading(false);
+
+    return returnObject;
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,7 +84,7 @@ export const useRequests = () => {
   return {
     loading,
     authRequest,
-    getRequest,
+    request,
     postRequest,
   };
 };
