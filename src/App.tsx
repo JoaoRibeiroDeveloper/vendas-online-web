@@ -8,7 +8,7 @@ import {
 
 import { firstScreenRoutes } from './modules/firstScreen/routes';
 import { loginRoutes } from './modules/login/routes';
-import { productScreenRoutes } from './modules/product/routes';
+import { productScreens } from './modules/product/routes';
 import { URL_USER } from './shared/constants/urls';
 import { MethodsEnum } from './shared/enums/methods.enum';
 import { verifyLoggedIn } from './shared/functions/connection/auth';
@@ -19,7 +19,7 @@ import { useRequests } from './shared/hooks/useRequests';
 const routes: RouteObject[] = [...loginRoutes];
 const routerLoggedIn: RouteObject[] = [
   ...firstScreenRoutes,
-  ...productScreenRoutes,
+  ...productScreens,
 ].map(route => ({
   ...route,
   loader: verifyLoggedIn,
