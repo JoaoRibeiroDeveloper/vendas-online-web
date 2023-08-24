@@ -16,9 +16,9 @@ import {
   getAuthorizationToken,
   verifyLoggedIn,
 } from './shared/functions/connection/auth';
-import { useGlobalContext } from './shared/hooks/useGlobalContext';
 import { useNotification } from './shared/hooks/useNotification';
 import { useRequests } from './shared/hooks/useRequests';
+import { useGlobalReducer } from './store/reducers/globalReducer/useGlobalReducer';
 
 const routes: RouteObject[] = [...loginRoutes];
 const routerLoggedIn: RouteObject[] = [
@@ -34,7 +34,7 @@ const router: RemixRouter = createBrowserRouter([...routes, ...routerLoggedIn]);
 
 function App() {
   const { contextHolder } = useNotification();
-  const { setUser } = useGlobalContext();
+  const { setUser } = useGlobalReducer();
   const { request } = useRequests();
 
   useEffect(() => {
