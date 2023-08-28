@@ -21,7 +21,9 @@ const Product = () => {
     handleOnClickInsert,
     onSearch,
     handleDeleteProduct,
+    handleEditProduct,
   } = useProduct();
+
   const columns: ColumnsType<ProductType> = useMemo(
     () => [
       {
@@ -54,7 +56,10 @@ const Product = () => {
         dataIndex: '',
         key: 'x',
         render: (_, product) => (
-          <a onClick={() => handleDeleteProduct(product.id)}>Deletar</a>
+          <>
+            <a onClick={() => handleEditProduct(product.id)}>Editar</a>
+            <a onClick={() => handleDeleteProduct(product.id)}>Deletar</a>
+          </>
         ),
       },
     ],
