@@ -21,6 +21,7 @@ export const useRequests = () => {
     method: MethodType,
     saveGlobal?: (object: T) => void,
     body?: unknown,
+    message?: string,
   ): Promise<T | undefined> => {
     setLoading(true);
     const returnObject: T | undefined = await ConnectionAPI.connect<T>(
@@ -31,6 +32,9 @@ export const useRequests = () => {
       .then(result => {
         if (saveGlobal) {
           saveGlobal(result);
+        }
+        if (message) {
+          setNotification('Sucesso!', 'success', message);
         }
         return result;
       })
