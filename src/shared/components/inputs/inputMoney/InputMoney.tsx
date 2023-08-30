@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import Input, { InputProps } from '../input/Input';
+import { InputMoneyTestId } from './__tests__/InputMoney.spec';
 
 interface InputMoneyProps extends InputProps {
   value: number;
@@ -47,6 +48,7 @@ const InputMoney = ({
 
   return (
     <Input
+      data-testid={InputMoneyTestId.INPUT}
       addonBefore={addonBefore}
       value={currentValue}
       onChange={handleOnChange}
